@@ -1,0 +1,16 @@
+.hire-tooltip {
+	position: absolute;
+}
+
+.hire-tooltip > .hire-tooltip-body {
+	border-radius: 6px;
+	padding: 20px;
+}
+
+.hire-tooltip > svg {
+	position: absolute;
+}
+
+.hire-tooltip.bottom {
+	margin-top: 12px;
+}
