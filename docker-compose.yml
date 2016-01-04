@@ -1,0 +1,8 @@
+dev:
+  entrypoint: "mux project"
+  image: gijsjan/webdev
+  ports:
+    - "3000-3001:3000-3001"
+  volumes:
+    - .:/home/developer/project
+    - ./tmuxinator.yml:/home/developer/.tmuxinator/project.yml

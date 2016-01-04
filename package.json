@@ -5,9 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "bump": "hi-bump",
-    "start": "scripts/watch.sh",
-    "test": "mocha --compilers js:babel/register --recursive test/*.js",
-    "test:watch": "nodemon -x \"mocha --compilers js:babel/register --recursive --watch test/*.js\" -w test -w build"
+    "start": "scripts/watch.sh"
   },
   "repository": {
     "type": "git",
