@@ -1,10 +1,5 @@
-import React from "react";
-import cx from "classnames";
-
-let fs = require("fs");
-import insertCss from "insert-css";
-let css = fs.readFileSync(__dirname + "/index.css");
-insertCss(css, {prepend: true});
+import * as React from "react";
+import * as cx from "classnames";
 
 // Map of polygons. The key is confusing, it is the orientation
 // of the tooltip. When the orientation of the tooltip is `bottom`
@@ -14,7 +9,7 @@ const polygon = {
 	left: <polygon points="0,0 18,15 0,30 0,0"/>,
 	right: <polygon points="30,0 30,30 12,15, 30,0"/>,
 	top: <polygon points="0,0 30,0 15,18 0,0"/>
-}
+};
 
 let getTipBorder = (strokeColor) => {
 	return {
@@ -23,21 +18,73 @@ let getTipBorder = (strokeColor) => {
 		right: <path d="M0,30 L15,12 L30,30" stroke={strokeColor} strokeWidth="3" />,
 		top: <path d="M0,30 L15,12 L30,30" stroke={strokeColor} strokeWidth="3" />
 	};
+};
+
+interface IProps {
+	backgroundColor?: string;
+	borderColor?: string;
+	className?: string;
+	orientation?: "top" | "right" | "bottom" | "left";
+	shift?: number;
+	textColor?: string;
 }
 
+class Tooltip extends React.Component<IProps, null> {
+	public static defaultProps = {
+		backgroundColor: "white",
+		orientation: "bottom",
+		shift: .5,
+		textColor: "black"
+	};
 
+	public render() {
+		let tipBorder;
 
-class Tooltip extends React.Component {
-	getStyle() {
+		let bodyStyle: any = {
+			backgroundColor: this.props.backgroundColor,
+			color: this.props.textColor
+		};
+
+		if (this.props.borderColor != null) {
+			bodyStyle.border = `1px solid ${this.props.borderColor}`;
+			tipBorder = getTipBorder(this.props.borderColor)[this.props.orientation];
+		}
+
+		return (
+			<div className={cx(
+				"hire-tooltip",
+				this.props.className,
+				this.props.orientation
+			)}>
+				<div
+					className="hire-tooltip-body"
+					style={bodyStyle}
+				>
+					{this.props.children}
+				</div>
+				<svg
+					fill={this.props.backgroundColor}
+					height="20px"
+					style={this.getStyle()}
+					viewBox="0 0 30 30"
+					width="20px">
+					{tipBorder}
+					{polygon[this.props.orientation]}
+				</svg>
+			</div>
+		);
+	}
+
+	private getStyle = () => {
 		let style;
 
-		let bottomOrTop = {
+		let bottomOrTop: any = {
 			left: `calc(${100 * this.props.shift}% - 10px)`
-		}
+		};
 
-		let leftOrRight = {
+		let leftOrRight: any = {
 			top: `calc(${100 * this.props.shift}% - 10px)`
-		}
+		};
 
 		switch (this.props.orientation) {
 			case "bottom":
@@ -69,69 +116,6 @@ class Tooltip extends React.Component {
 		return style;
 	}
 
-	render() {
-		let tipBorder;
-
-		let bodyStyle = {
-			backgroundColor: this.props.backgroundColor,
-			color: this.props.textColor
-		}
-
-		if (this.props.borderColor != null) {
-			bodyStyle.border = `1px solid ${this.props.borderColor}`;
-			tipBorder = getTipBorder(this.props.borderColor)[this.props.orientation];
-		}
-
-		return (
-			<div className={cx(
-				"hire-tooltip",
-				this.props.className,
-				this.props.orientation
-			)}>
-				<div
-					className="hire-tooltip-body"
-					style={bodyStyle}
-				>
-					{this.props.children}
-				</div>
-				<svg
-					fill={this.props.backgroundColor}
-					height="20px"
-					style={this.getStyle()}
-					viewBox="0 0 30 30"
-					width="20px">
-					{tipBorder}
-					{polygon[this.props.orientation]}
-				</svg>
-			</div>
-		);
-	}
 }
-
-Tooltip.defaultProps = {
-	backgroundColor: "white",
-	orientation: "bottom",
-	shift: .5,
-	textColor: "black"
-};
-
-Tooltip.propTypes = {
-	backgroundColor: React.PropTypes.string,
-	borderColor: React.PropTypes.string,
-	className: React.PropTypes.string,
-	orientation: React.PropTypes.oneOf(["top", "right", "bottom", "left"]),
-	shift: (props, propName, componentName) => {
-		let value = parseFloat(props[propName]);
-
-		if (isNaN(value)) {
-			return new Error("`Shift` should be a number");
-		}
-
-		if (value < 0 || value > 1) {
-			return new Error("`Shift` should be a number between 0 and 1");
-		}
-	},
-	textColor: React.PropTypes.string
-};
 
 export default Tooltip;
