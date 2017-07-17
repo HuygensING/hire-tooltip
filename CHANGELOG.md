@@ -1,3 +1,6 @@
+### v1.1.3	(2017/7/17 9:5)
+* Add default styling
+
 ### v1.1.2	(2017/7/11 14:28)
 * Move to TypeScript
 
