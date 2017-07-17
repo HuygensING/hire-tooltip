@@ -30,7 +30,7 @@ interface IProps {
 }
 
 class Tooltip extends React.Component<IProps, null> {
-	public static defaultProps = {
+	public static defaultProps: IProps = {
 		backgroundColor: "white",
 		orientation: "bottom",
 		shift: .5,
@@ -42,7 +42,10 @@ class Tooltip extends React.Component<IProps, null> {
 
 		let bodyStyle: any = {
 			backgroundColor: this.props.backgroundColor,
-			color: this.props.textColor
+			borderRadius: '6px',
+			color: this.props.textColor,
+			height: '100%',
+			padding: '20px',
 		};
 
 		if (this.props.borderColor != null) {
@@ -51,11 +54,14 @@ class Tooltip extends React.Component<IProps, null> {
 		}
 
 		return (
-			<div className={cx(
-				"hire-tooltip",
-				this.props.className,
-				this.props.orientation
-			)}>
+			<div
+				className={cx(
+					"hire-tooltip",
+					this.props.className,
+					this.props.orientation
+				)}
+			  style={{position: 'absolute'}}
+			>
 				<div
 					className="hire-tooltip-body"
 					style={bodyStyle}
@@ -79,16 +85,19 @@ class Tooltip extends React.Component<IProps, null> {
 		let style;
 
 		let bottomOrTop: any = {
-			left: `calc(${100 * this.props.shift}% - 10px)`
+			left: `calc(${100 * this.props.shift}% - 10px)`,
+			position: 'absolute',
 		};
 
 		let leftOrRight: any = {
-			top: `calc(${100 * this.props.shift}% - 10px)`
+			top: `calc(${100 * this.props.shift}% - 10px)`,
+			position: 'absolute',
 		};
 
 		switch (this.props.orientation) {
 			case "bottom":
 				bottomOrTop.top = "-19px";
+				bottomOrTop.marginTop = '12px';
 				style = bottomOrTop;
 
 				break;
