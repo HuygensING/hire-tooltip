@@ -97,7 +97,6 @@ class Tooltip extends React.Component<IProps, null> {
 		switch (this.props.orientation) {
 			case "bottom":
 				bottomOrTop.top = "-19px";
-				bottomOrTop.marginTop = '12px';
 				style = bottomOrTop;
 
 				break;
