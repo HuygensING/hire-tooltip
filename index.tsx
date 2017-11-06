@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as cx from "classnames";
 
 // Map of polygons. The key is confusing, it is the orientation
 // of the tooltip. When the orientation of the tooltip is `bottom`
@@ -20,78 +19,76 @@ let getTipBorder = (strokeColor) => {
 	};
 };
 
-interface IProps {
-	backgroundColor?: string;
-	borderColor?: string;
-	className?: string;
-	orientation?: "top" | "right" | "bottom" | "left";
-	shift?: number;
-	textColor?: string;
+export interface IProps {
+	bodyStyle?: React.CSSProperties
+	orientation?: "top" | "right" | "bottom" | "left"
+	shift?: number
+	style?: React.CSSProperties
 }
 
 class Tooltip extends React.Component<IProps, null> {
 	public static defaultProps: IProps = {
-		backgroundColor: "white",
+		bodyStyle: {},
 		orientation: "bottom",
 		shift: .5,
-		textColor: "black"
+		style: {},
 	};
 
 	public render() {
-		let tipBorder;
+		const borderColor = this.props.bodyStyle.hasOwnProperty('borderColor') ?
+			this.props.bodyStyle.borderColor :
+			'black'
 
-		let bodyStyle: any = {
-			backgroundColor: this.props.backgroundColor,
-			borderRadius: '6px',
-			color: this.props.textColor,
-			height: '100%',
-			padding: '20px',
-		};
-
-		if (this.props.borderColor != null) {
-			bodyStyle.border = `1px solid ${this.props.borderColor}`;
-			tipBorder = getTipBorder(this.props.borderColor)[this.props.orientation];
-		}
+		const backgroundColor = this.props.bodyStyle.hasOwnProperty('backgroundColor') ?
+			this.props.bodyStyle.backgroundColor :
+			'white'
 
 		return (
 			<div
-				className={cx(
-					"hire-tooltip",
-					this.props.className,
-					this.props.orientation
-				)}
-			  style={{position: 'absolute'}}
+				style={{
+					position: 'absolute',
+					zIndex: 999,
+					...this.props.style,
+				}}
 			>
 				<div
-					className="hire-tooltip-body"
-					style={bodyStyle}
+					style={{
+						backgroundColor,
+						borderColor,
+						borderRadius: '6px',
+						borderStyle: 'solid',
+						borderWidth: '1px',
+						color: 'black',
+						height: '100%',
+						padding: '20px',
+						...this.props.bodyStyle,
+					}}
 				>
 					{this.props.children}
 				</div>
 				<svg
-					fill={this.props.backgroundColor}
+					fill={backgroundColor}
 					height="20px"
-					style={this.getStyle()}
+					style={this.getSvgStyle()}
 					viewBox="0 0 30 30"
-					width="20px">
-					{tipBorder}
+					width="20px"
+				>
+					{getTipBorder(borderColor)[this.props.orientation]}
 					{polygon[this.props.orientation]}
 				</svg>
 			</div>
 		);
 	}
 
-	private getStyle = () => {
+	private getSvgStyle = () => {
 		let style;
 
-		let bottomOrTop: any = {
+		let bottomOrTop: React.CSSProperties = {
 			left: `calc(${100 * this.props.shift}% - 10px)`,
-			position: 'absolute',
 		};
 
-		let leftOrRight: any = {
+		let leftOrRight: React.CSSProperties = {
 			top: `calc(${100 * this.props.shift}% - 10px)`,
-			position: 'absolute',
 		};
 
 		switch (this.props.orientation) {
@@ -120,6 +117,8 @@ class Tooltip extends React.Component<IProps, null> {
 				break;
 
 		}
+
+		style.position = 'absolute'
 
 		return style;
 	}
